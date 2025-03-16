@@ -1,7 +1,9 @@
 name: Run Gradle Build
+
 on:
-  - push
-  - pull_request
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   gradle:
@@ -14,10 +16,13 @@ jobs:
         uses: actions/setup-java@v4.0.0
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 8
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for Gradle
+        run: chmod +x gradlew
 
       - name: Execute Gradle build
         run: ./gradlew build
