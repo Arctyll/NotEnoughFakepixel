@@ -328,6 +328,11 @@ public class Dungeons {
     public boolean dungeonsClearedNotifier = true;
 
     @Expose
+    @ConfigOption(name = "Show Secrets waypoints", desc = "Show Secrets waypoints.", subcategoryId = 5)
+    @ConfigEditorBoolean
+    public boolean dungeonsSecretWaypoints = true;
+
+    @Expose
     @ConfigOption(name = "Show Item Secrets and Wither Essences", desc = "Show item secrets and wither essences through walls.", subcategoryId = 5)
     @ConfigEditorBoolean
     public boolean dungeonsItemSecretsDisplay = true;

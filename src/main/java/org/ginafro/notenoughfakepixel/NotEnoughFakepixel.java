@@ -2,6 +2,7 @@ package org.ginafro.notenoughfakepixel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
@@ -26,6 +27,8 @@ import org.ginafro.notenoughfakepixel.features.skyblock.crimson.AshfangHelper;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.BossNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.AshfangOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.*;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets.AutoRoom;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets.Waypoints;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.devices.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.BatMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.FelMobDisplay;
@@ -70,6 +73,9 @@ public class NotEnoughFakepixel {
     public static File configDirectory;
     private File configFile;
 
+    public static JsonObject roomsJson;
+    public static JsonObject waypointsJson;
+
     public static Configuration feature;
 
     public static NotEnoughFakepixel instance;
@@ -107,6 +113,23 @@ public class NotEnoughFakepixel {
 
         new Aliases();
 
+        try {
+            ResourceLocation roomsLoc = new ResourceLocation("notenoughfakepixel", "dungeonrooms/dungeonrooms.json");
+            InputStream roomsIn = Minecraft.getMinecraft().getResourceManager().getResource(roomsLoc).getInputStream();
+            BufferedReader roomsReader = new BufferedReader(new InputStreamReader(roomsIn));
+
+            ResourceLocation waypointsLoc = new ResourceLocation("notenoughfakepixel", "dungeonrooms/secretlocations.json");
+            InputStream waypointsIn = Minecraft.getMinecraft().getResourceManager().getResource(waypointsLoc).getInputStream();
+            BufferedReader waypointsReader = new BufferedReader(new InputStreamReader(waypointsIn));
+
+            Gson gson = new Gson();
+            roomsJson = gson.fromJson(roomsReader, JsonObject.class);
+
+            waypointsJson = gson.fromJson(waypointsReader, JsonObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
         Alerts.load();
@@ -135,6 +158,9 @@ public class NotEnoughFakepixel {
 
         MinecraftForge.EVENT_BUS.register(new AutoReadyDungeon());
         MinecraftForge.EVENT_BUS.register(new AutoCloseChests());
+
+        MinecraftForge.EVENT_BUS.register(new AutoRoom());
+        MinecraftForge.EVENT_BUS.register(new Waypoints());
 
         MinecraftForge.EVENT_BUS.register(new ThreeWeirdos());
         MinecraftForge.EVENT_BUS.register(new WaterSolver());
