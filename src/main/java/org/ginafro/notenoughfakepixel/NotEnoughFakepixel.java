@@ -5,9 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -46,6 +48,7 @@ import org.ginafro.notenoughfakepixel.features.skyblock.enchanting.PreventMisscl
 import org.ginafro.notenoughfakepixel.features.skyblock.fishing.GreatCatchNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.mining.*;
 //import org.ginafro.notenoughfakepixel.features.skyblock.overlays.StorageOverlay;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.slayers.*;
@@ -222,6 +225,8 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
         MinecraftForge.EVENT_BUS.register(new Alerts());
+        //MinecraftForge.EVENT_BUS.register(new SlotLocking());
+        //MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
@@ -281,6 +286,19 @@ public class NotEnoughFakepixel {
                 writer.write(gson.toJson(feature));
             }
         } catch (IOException ignored) {
+        }
+    }
+
+    @SubscribeEvent
+    public void renderPlayerInfo(final RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (ScoreboardUtils.currentLocation.isDungeon()) {
+            if (AutoRoom.guiToggled) {
+                AutoRoom.renderText();
+            }
+            if (AutoRoom.coordToggled) {
+                AutoRoom.renderCoord();
+            }
         }
     }
 

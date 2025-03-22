@@ -10,9 +10,11 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.EnumChatFormatting;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.events.PacketReadEvent;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
@@ -53,7 +55,9 @@ public class Waypoints {
     public static boolean disableWhenAllFound = true;
     public static boolean allFound = false;
 
+    public static boolean showWaypointText = true;
     public static boolean showBoundingBox = true;
+    public static boolean showBeacon = true;
 
     public static int secretNum = 0;
     public static int completedSecrets = 0;
@@ -143,6 +147,7 @@ public class Waypoints {
                     GlStateManager.disableCull();
                     if (showBoundingBox) drawFilledBoundingBox(new AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1), color, 0.4f);
                     GlStateManager.disableTexture2D();
+                    if (showWaypointText) renderWaypointText(secretsObject.get("secretName").getAsString(), pos.up(2), event.partialTicks);
                     GlStateManager.disableLighting();
                     GlStateManager.enableTexture2D();
                     GlStateManager.enableDepth();
@@ -259,6 +264,120 @@ public class Waypoints {
         }
     }
 
+    public static void renderWaypointText(String str, BlockPos loc, float partialTicks) {
+        GlStateManager.alphaFunc(516, 0.1F);
+
+        GlStateManager.pushMatrix();
+
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        double viewerX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * partialTicks;
+        double viewerY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * partialTicks;
+        double viewerZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * partialTicks;
+
+        double x = loc.getX() - viewerX;
+        double y = loc.getY() - viewerY - viewer.getEyeHeight();
+        double z = loc.getZ() - viewerZ;
+
+        double distSq = x*x + y*y + z*z;
+        double dist = Math.sqrt(distSq);
+        if(distSq > 144) {
+            x *= 12/dist;
+            y *= 12/dist;
+            z *= 12/dist;
+        }
+        GlStateManager.translate(x, y, z);
+        GlStateManager.translate(0, viewer.getEyeHeight(), 0);
+
+        drawNametag(str);
+
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.translate(0, -0.25f, 0);
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+
+        drawNametag(EnumChatFormatting.YELLOW.toString()+Math.round(dist)+"m");
+
+        GlStateManager.popMatrix();
+
+        GlStateManager.disableLighting();
+    }
+
+    public static void drawNametag(String str) {
+        FontRenderer fontrenderer = Minecraft.getMinecraft().fontRendererObj;
+        float f = 1.6F;
+        float f1 = 0.016666668F * f;
+        GlStateManager.pushMatrix();
+        GL11.glNormal3f(0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(-Minecraft.getMinecraft().getRenderManager().playerViewY, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(Minecraft.getMinecraft().getRenderManager().playerViewX, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(-f1, -f1, f1);
+        GlStateManager.disableLighting();
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        int i = 0;
+
+        int j = fontrenderer.getStringWidth(str) / 2;
+        GlStateManager.disableTexture2D();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        worldrenderer.pos(-j - 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(-j - 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, 8 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        worldrenderer.pos(j + 1, -1 + i, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, 553648127);
+        GlStateManager.depthMask(true);
+
+        fontrenderer.drawString(str, -fontrenderer.getStringWidth(str) / 2, i, -1);
+
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
+    }
+
+    //Disable waypoint within 4 blocks away on sneak
+    @SubscribeEvent
+    public void onKey(InputEvent.KeyInputEvent event) {
+        if (!ScoreboardUtils.currentLocation.isDungeon() || !NotEnoughFakepixel.feature.dungeons.dungeonsSecretWaypoints || !sneakToDisable) return;
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if (FMLClientHandler.instance().getClient().gameSettings.keyBindSneak.isPressed()) {
+            if (System.currentTimeMillis() - lastSneakTime < 1000) { //check for two taps in under a second
+                if (AutoRoom.lastRoomJson != null && AutoRoom.lastRoomName != null) {
+                    secretNum = AutoRoom.lastRoomJson.get("secrets").getAsInt();
+                    if (NotEnoughFakepixel.waypointsJson.get(AutoRoom.lastRoomName) != null) {
+                        JsonArray secretsArray = NotEnoughFakepixel.waypointsJson.get(AutoRoom.lastRoomName).getAsJsonArray();
+                        int arraySize = secretsArray.size();
+                        for(int i = 0; i < arraySize; i++) {
+                            JsonObject secretsObject = secretsArray.get(i).getAsJsonObject();
+                            if (secretsObject.get("category").getAsString().equals("chest") || secretsObject.get("category").getAsString().equals("wither")
+                                    || secretsObject.get("category").getAsString().equals("item") || secretsObject.get("category").getAsString().equals("bat")) {
+                                BlockPos pos = Utils.relativeToActual(new BlockPos(secretsObject.get("x").getAsInt(), secretsObject.get("y").getAsInt(), secretsObject.get("z").getAsInt()));
+                                if (pos == null) return;
+                                if (player.getDistanceSq(pos) <= 16D) {
+                                    for(int j = 1; j <= secretNum; j++) {
+                                        if (secretsObject.get("secretName").getAsString().contains(String.valueOf(j))) {
+                                            if (!Waypoints.secretsList.get(j-1)) continue;
+                                            Waypoints.secretsList.set(j-1, false);
+                                            Waypoints.allSecretsMap.replace(AutoRoom.lastRoomName, Waypoints.secretsList);
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            lastSneakTime = System.currentTimeMillis();
+        }
+    }
+
     public static void drawFilledBoundingBox(AxisAlignedBB aabb, Color c, float alphaMultiplier) {
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
@@ -321,40 +440,4 @@ public class Waypoints {
     }
 
 
-    //Disable waypoint within 4 blocks away on sneak
-    @SubscribeEvent
-    public void onKey(InputEvent.KeyInputEvent event) {
-        if (!ScoreboardUtils.currentLocation.isDungeon() || !NotEnoughFakepixel.feature.dungeons.dungeonsSecretWaypoints || !sneakToDisable) return;
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if (FMLClientHandler.instance().getClient().gameSettings.keyBindSneak.isPressed()) {
-            if (System.currentTimeMillis() - lastSneakTime < 1000) { //check for two taps in under a second
-                if (AutoRoom.lastRoomJson != null && AutoRoom.lastRoomName != null) {
-                    secretNum = AutoRoom.lastRoomJson.get("secrets").getAsInt();
-                    if (NotEnoughFakepixel.waypointsJson.get(AutoRoom.lastRoomName) != null) {
-                        JsonArray secretsArray = NotEnoughFakepixel.waypointsJson.get(AutoRoom.lastRoomName).getAsJsonArray();
-                        int arraySize = secretsArray.size();
-                        for(int i = 0; i < arraySize; i++) {
-                            JsonObject secretsObject = secretsArray.get(i).getAsJsonObject();
-                            if (secretsObject.get("category").getAsString().equals("chest") || secretsObject.get("category").getAsString().equals("wither")
-                                    || secretsObject.get("category").getAsString().equals("item") || secretsObject.get("category").getAsString().equals("bat")) {
-                                BlockPos pos = Utils.relativeToActual(new BlockPos(secretsObject.get("x").getAsInt(), secretsObject.get("y").getAsInt(), secretsObject.get("z").getAsInt()));
-                                if (pos == null) return;
-                                if (player.getDistanceSq(pos) <= 16D) {
-                                    for(int j = 1; j <= secretNum; j++) {
-                                        if (secretsObject.get("secretName").getAsString().contains(String.valueOf(j))) {
-                                            if (!Waypoints.secretsList.get(j-1)) continue;
-                                            Waypoints.secretsList.set(j-1, false);
-                                            Waypoints.allSecretsMap.replace(AutoRoom.lastRoomName, Waypoints.secretsList);
-                                            return;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            lastSneakTime = System.currentTimeMillis();
-        }
-    }
 }

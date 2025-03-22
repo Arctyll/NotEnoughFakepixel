@@ -11,7 +11,10 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.BlockPos;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.events.Handlers.TextRenderer;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
 import org.ginafro.notenoughfakepixel.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -213,9 +216,9 @@ public class AutoRoom {
 
         //Store/Retrieve which waypoints to enable
         if (lastRoomJson != null && lastRoomJson.get("name") != null) {
-                lastRoomName = lastRoomJson.get("name").getAsString();
-                Waypoints.allSecretsMap.putIfAbsent(lastRoomName, new ArrayList<>(Collections.nCopies(9, true)));
-                Waypoints.secretsList = Waypoints.allSecretsMap.get(lastRoomName);
+            lastRoomName = lastRoomJson.get("name").getAsString();
+            Waypoints.allSecretsMap.putIfAbsent(lastRoomName, new ArrayList<>(Collections.nCopies(9, true)));
+            Waypoints.secretsList = Waypoints.allSecretsMap.get(lastRoomName);
         } else {
             lastRoomName = null;
         }
@@ -232,4 +235,40 @@ public class AutoRoom {
             player.addChatMessage(new ChatComponentText(message));
         }
     }
+
+    public static void renderText() {
+        if (autoTextOutput == null) return;
+        if (autoTextOutput.isEmpty()) return;
+        Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+        int y = 0;
+        for (String message:autoTextOutput) {
+            int roomStringWidth = mc.fontRendererObj.getStringWidth(message);
+            TextRenderer.drawText(mc, message, ((scaledResolution.getScaledWidth() * scaleX) / 100) - (roomStringWidth / 2),
+                    ((scaledResolution.getScaledHeight() * scaleY) / 100) + y, 1D, true);
+            y += mc.fontRendererObj.FONT_HEIGHT;
+        }
+    }
+
+    public static void renderCoord() {
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayerSP player = mc.thePlayer;
+        ScaledResolution scaledResolution = new ScaledResolution(mc);
+
+        BlockPos relativeCoord = Utils.actualToRelative(new BlockPos(player.posX,player.posY,player.posZ));
+        if (relativeCoord == null) return;
+
+        List<String> coordDisplay = new ArrayList<>();
+        coordDisplay.add("Direction: " + Utils.originCorner);
+        coordDisplay.add("Origin: " + Utils.originBlock.getX() + "," + Utils.originBlock.getY() + "," + Utils.originBlock.getZ());
+        coordDisplay.add("Relative Pos.: "+ relativeCoord.getX() + "," + relativeCoord.getY() + "," + relativeCoord.getZ());
+        int yPos = 0;
+        for (String message:coordDisplay) {
+            int roomStringWidth = mc.fontRendererObj.getStringWidth(message);
+            TextRenderer.drawText(mc, message, ((scaledResolution.getScaledWidth() * 95) / 100) - (roomStringWidth),
+                    ((scaledResolution.getScaledHeight() * 5) / 100) + yPos, 1D, true);
+            yPos += mc.fontRendererObj.FONT_HEIGHT;
+        }
+    }
 }
+
