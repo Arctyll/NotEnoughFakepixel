@@ -18,7 +18,7 @@ public class Aliases {
             commandMap.put("f" + i, "/joindungeon " + i);
             commandMap.put("m" + i, "/joindungeon " + i + " master");
         }
-        String[] warps = {"isle", "dh", "hub", "end", "park", "farm","forge","dwarven"};
+        String[] warps = {"isle", "dh", "hub", "end", "park", "farm","forge","dwarven","castle","da","crypts","gold","deep"};
         for (String warp : warps) {
             commandMap.put(warp, "/warp " + warp);
         }
