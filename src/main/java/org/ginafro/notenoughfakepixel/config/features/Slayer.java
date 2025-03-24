@@ -10,7 +10,7 @@ public class Slayer {
     @Expose
     @ConfigOption(name = "Miniboss Settings", desc = "Settings for slayer minibosses.")
     @ConfigEditorAccordion(id = 0)
-    public boolean minibossAccordion = true;
+    public boolean minibossAccordion = false;
 
     @Expose
     @ConfigOption(name = "Slayer Minibosses Display", desc = "Draw a box around slayer minibosses.")
@@ -40,7 +40,7 @@ public class Slayer {
     @Expose
     @ConfigOption(name = "Slayer Boss Settings", desc = "Settings for slayer bosses.")
     @ConfigEditorAccordion(id = 1)
-    public boolean bossAccordion = true;
+    public boolean bossAccordion = false;
 
     @Expose
     @ConfigOption(name = "Slayer Bosses Display", desc = "Draw a box around slayer bosses.")
@@ -79,7 +79,7 @@ public class Slayer {
     @Expose
     @ConfigOption(name = "Voidgloom Beacon Settings", desc = "Settings for beacon waypoints.")
     @ConfigEditorAccordion(id = 2)
-    public boolean beaconAccordion = true;
+    public boolean beaconAccordion = false;
 
     @Expose
     @ConfigOption(name = "Show Beacon Waypoint", desc = "Show waypoint for beacon.")

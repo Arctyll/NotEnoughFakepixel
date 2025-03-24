@@ -9,7 +9,7 @@ public class DianaF {
     @Expose
     @ConfigOption(name = "Burrow Settings", desc = "Settings for burrow waypoints and visuals.")
     @ConfigEditorAccordion(id = 0)
-    public boolean burrowAccordion = true;
+    public boolean burrowAccordion = false;
 
     @Expose
     @ConfigOption(name = "Show Burrow Guess", desc = "Show a guess to the burrow.")
@@ -57,7 +57,7 @@ public class DianaF {
     @Expose
     @ConfigOption(name = "Mob Settings", desc = "Settings for Gaia Construct and Siamese.")
     @ConfigEditorAccordion(id = 1)
-    public boolean mobAccordion = true;
+    public boolean mobAccordion = false;
 
     @Expose
     @ConfigOption(name = "Track Gaia Hits", desc = "Track when Gaia Construct can be damaged.")

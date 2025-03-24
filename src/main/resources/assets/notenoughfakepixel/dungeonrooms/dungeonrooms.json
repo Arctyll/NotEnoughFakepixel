@@ -212,7 +212,7 @@
     }
   ],
   "4c711a8a01a9fb162427f5630d3ee2b8":[
-     {
+    {
       "name":"Admin-0",
       "category":"1x1",
       "dsg":"/channels/727426780381577291/750984974794227844/752939761534238880",
@@ -485,7 +485,16 @@
       "floorhash":"ebfc84ae16f856ec3310884e701dc6c4"
     }
   ],
-  "548cb5a9cea0de986e240aa08ebb8a03":[
+  "ac5392f69f022691b9932cefa9a7182f":[
+    {
+      "name":"Beams-2",
+      "category":"1x1",
+      "dsg":"/channels/727426780381577291/769368654315389009/779118152176762911",
+      "sbp":"beams",
+      "secrets":2
+    }
+  ],
+  "bbfa33b39106d0b7a9f4eec065a82c55":[
     {
       "name":"Beams-2",
       "category":"1x1",
@@ -548,6 +557,7 @@
       "secrets":2
     }
   ],
+
   "751263a0da7172ae38c68f8cb3d3cc32":[
     {
       "name":"Painting-2",
@@ -557,7 +567,16 @@
       "secrets":2
     }
   ],
-  "0ba397a74339e4291ea6c29e50d0f7ca":[
+  "d328bbc6b78c8cadb8e8cf4aac41ecc4":[
+    {
+      "name":"Perch-2",
+      "category":"1x1",
+      "dsg":"/channels/727426780381577291/733839339427201135/733841512420605973",
+      "sbp":"perch",
+      "secrets":2
+    }
+  ],
+  "a4b7cfb61e48b79e2b04afc49f232d60":[
     {
       "name":"Perch-2",
       "category":"1x1",
@@ -591,6 +610,24 @@
       "dsg":"/channels/727426780381577291/769368894225121280/793146978712289290",
       "sbp":"tombstone",
       "secrets":2
+    }
+  ],
+  "cf3f67a6a19d148dd75c2b126dd899e1":[
+    {
+      "name":"Double-Diamond-3",
+      "category": "1x1",
+      "secrets": 3,
+      "dsg": "/channels/727426780381577291/880155380058046474/880155606240100402",
+      "sbp": "double-diamond"
+    }
+  ],
+  "58acb1170a48eb8e10da2515f38d5ac0":[
+    {
+      "name":"Double-Diamond-3",
+      "category": "1x1",
+      "secrets": 3,
+      "dsg": "/channels/727426780381577291/880155380058046474/880155606240100402",
+      "sbp": "double-diamond"
     }
   ],
   "b9b9f11a7d09e758dda13195fe8ad013":[

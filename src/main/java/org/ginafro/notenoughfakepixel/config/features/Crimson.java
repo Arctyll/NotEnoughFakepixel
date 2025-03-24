@@ -10,7 +10,7 @@ public class Crimson {
     @Expose
     @ConfigOption(name = "Boss Notifiers", desc = "Notifications for boss spawns.")
     @ConfigEditorAccordion(id = 0)
-    public boolean notifiersAccordion = true;
+    public boolean notifiersAccordion = false;
 
     @Expose
     @ConfigOption(name = "Bladesoul Notifier", desc = "Notify when Bladesoul boss spawns.")
@@ -40,7 +40,7 @@ public class Crimson {
     @Expose
     @ConfigOption(name = "Ashfang Settings", desc = "Settings related to Ashfang.")
     @ConfigEditorAccordion(id = 1)
-    public boolean ashfangAccordion = true;
+    public boolean ashfangAccordion = false;
 
     @Expose
     @ConfigOption(name = "Ashfang Waypoint", desc = "Show waypoint on Ashfang.")

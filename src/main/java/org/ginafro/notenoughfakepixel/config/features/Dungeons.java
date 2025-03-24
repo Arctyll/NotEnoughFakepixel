@@ -10,7 +10,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "General Settings", desc = "General dungeon settings.")
     @ConfigEditorAccordion(id = 0)
-    public boolean generalAccordion = true;
+    public boolean generalAccordion = false;
 
     @Expose
     @ConfigOption(name = "Is Paul Active", desc = "Check if Paul is active as mayor with EZPZ perk.")
@@ -94,7 +94,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Map Settings", desc = "Settings for the dungeon map.")
     @ConfigEditorAccordion(id = 1)
-    public boolean mapAccordion = true;
+    public boolean mapAccordion = false;
 
     @Expose
     @ConfigOption(name = "Dungeons Map", desc = "Enable dungeons map.")
@@ -133,7 +133,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Puzzle Solvers", desc = "Settings for puzzle solvers.")
     @ConfigEditorAccordion(id = 2)
-    public boolean puzzlesAccordion = true;
+    public boolean puzzlesAccordion = false;
 
     @Expose
     @ConfigOption(name = "Three Weirdos Solver", desc = "Enable Three Weirdos puzzle solver.")
@@ -175,7 +175,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Mob Settings", desc = "Settings for mob displays.")
     @ConfigEditorAccordion(id = 3)
-    public boolean mobsAccordion = true;
+    public boolean mobsAccordion = false;
 
     @Expose
     @ConfigOption(name = "Fel Mobs Display", desc = "Display Fel mobs.")
@@ -247,7 +247,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Terminal Settings", desc = "Settings for terminal GUIs and solvers.")
     @ConfigEditorAccordion(id = 4)
-    public boolean terminalsAccordion = true;
+    public boolean terminalsAccordion = false;
 
     @Expose
     @ConfigOption(name = "Custom Click in Order Terminal GUI", desc = "Use custom GUI for Click in Order terminal.")
@@ -367,7 +367,7 @@ public class Dungeons {
     @Expose
     @ConfigOption(name = "Score and Secrets", desc = "Settings for score notifications and secrets.")
     @ConfigEditorAccordion(id = 5)
-    public boolean scoreSecretsAccordion = true;
+    public boolean scoreSecretsAccordion = false;
 
     @Expose
     @ConfigOption(name = "S+ Notifier", desc = "Notify when S+ is virtually reached.")

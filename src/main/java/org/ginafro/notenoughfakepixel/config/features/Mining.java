@@ -34,7 +34,7 @@ public class Mining {
     @Expose
     @ConfigOption(name = "Mining Overlay Settings", desc = "Settings for the mining overlay.")
     @ConfigEditorAccordion(id = 0)
-    public boolean overlayAccordion = true;
+    public boolean overlayAccordion = false;
 
     @Expose
     @ConfigOption(name = "Mining Overlay", desc = "Enable the mining overlay in Dwarven Mines.")

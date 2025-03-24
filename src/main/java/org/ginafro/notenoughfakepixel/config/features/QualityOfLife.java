@@ -11,29 +11,11 @@ public class QualityOfLife {
     @ConfigEditorButton(runnableId = "nefAlerts", buttonText = "Edit")
     public String nefAlerts = "";
 
-    // Slot Locking Subcategory
-    @Expose
-    @ConfigOption(name = "Slot Locking Settings", desc = "Settings for slot locking features.")
-    @ConfigEditorAccordion(id = 0)
-    public boolean slotLockingAccordion = true;
-
-    @Expose
-    @ConfigOption(name = "Slot Locking", desc = "Enable Slot locking.")
-    @ConfigEditorBoolean
-    @ConfigAccordionId(id = 0)
-    public boolean qolLock = true;
-
-    @Expose
-    @ConfigOption(name = "Slot Locking Keybind", desc = "Keybind for Slot locking.")
-    @ConfigEditorKeybind(defaultKey = Keyboard.KEY_L)
-    @ConfigAccordionId(id = 0)
-    public int qolLockKey = Keyboard.KEY_L;
-
     // Visual Tweaks Subcategory
     @Expose
     @ConfigOption(name = "Visual Tweaks", desc = "Settings for visual enhancements.")
     @ConfigEditorAccordion(id = 1)
-    public boolean visualTweaksAccordion = true;
+    public boolean visualTweaksAccordion = false;
 
     @Expose
     @ConfigOption(name = "Fullbright", desc = "Enable fullbright.")
@@ -69,7 +51,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Fairy Soul Waypoints", desc = "Settings for fairy soul waypoints.")
     @ConfigEditorAccordion(id = 2)
-    public boolean fairySoulAccordion = true;
+    public boolean fairySoulAccordion = false;
 
     @Expose
     @ConfigOption(name = "Enable Fairy Soul Waypoints", desc = "Enable fairy soul waypoints.")
@@ -87,7 +69,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Etherwarp Settings", desc = "Settings for etherwarp features.")
     @ConfigEditorAccordion(id = 3)
-    public boolean etherwarpAccordion = true;
+    public boolean etherwarpAccordion = false;
 
     @Expose
     @ConfigOption(name = "Etherwarp Overlay", desc = "Show etherwarp overlay.")
@@ -111,7 +93,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Shortcuts", desc = "Settings for shortcut keybinds.")
     @ConfigEditorAccordion(id = 4)
-    public boolean shortcutsAccordion = true;
+    public boolean shortcutsAccordion = false;
 
     @Expose
     @ConfigOption(name = "Wardrobe Shortcut", desc = "Enable wardrobe shortcut.")
@@ -165,7 +147,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Sound Tweaks", desc = "Settings for sound modifications.")
     @ConfigEditorAccordion(id = 5)
-    public boolean soundTweaksAccordion = true;
+    public boolean soundTweaksAccordion = false;
 
     @Expose
     @ConfigOption(name = "Disable Jerry-chine Gun Sounds", desc = "Disable Jerry-chine gun sounds.")
@@ -201,7 +183,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Item Animation", desc = "Settings for item animation adjustments.")
     @ConfigEditorAccordion(id = 6)
-    public boolean itemAnimationAccordion = true;
+    public boolean itemAnimationAccordion = false;
 
     @Expose
     @ConfigOption(name = "Item Animation Toggle", desc = "Change the look of your held item.")
@@ -285,7 +267,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Player Size Settings", desc = "Settings for player size adjustments.")
     @ConfigEditorAccordion(id = 7)
-    public boolean playerSizeAccordion = true;
+    public boolean playerSizeAccordion = false;
 
     @Expose
     @ConfigOption(name = "Player Size Toggle", desc = "Enable size adjustment for the client player")
@@ -315,7 +297,7 @@ public class QualityOfLife {
     @Expose
     @ConfigOption(name = "Player Spin Settings", desc = "Settings for player rotation.")
     @ConfigEditorAccordion(id = 8)
-    public boolean playerSpinAccordion = true;
+    public boolean playerSpinAccordion = false;
 
     @Expose
     @ConfigOption(name = "Player Spin Toggle", desc = "Enable spinning for the client player")
