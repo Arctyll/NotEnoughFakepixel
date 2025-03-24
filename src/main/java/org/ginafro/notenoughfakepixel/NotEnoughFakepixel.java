@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
@@ -300,6 +301,32 @@ public class NotEnoughFakepixel {
                 AutoRoom.renderCoord();
             }
         }
+    }
+
+    private final Minecraft mc = Minecraft.getMinecraft();
+
+    @SubscribeEvent
+    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || mc.theWorld == null || mc.thePlayer == null) {
+            return;
+        }
+
+        GuiIngame gui = mc.ingameGUI;
+
+        // FPS
+        String fps = "FPS: " + Minecraft.getDebugFPS();
+
+        // Ping
+        String ping = "Ping: " + (mc.thePlayer.sendQueue.getPlayerInfo(mc.thePlayer.getUniqueID()) != null
+                ? mc.thePlayer.sendQueue.getPlayerInfo(mc.thePlayer.getUniqueID()).getResponseTime() : "N/A") + " ms";
+
+        // TPS
+        String tps = "TPS: " + (mc.isSingleplayer() ? "20.0" : "N/A");
+
+        // Render on screen
+        gui.drawString(mc.fontRendererObj, fps, 2, 2, 0xFFFFFF);
+        gui.drawString(mc.fontRendererObj, ping, 2, 12, 0xFFFFFF);
+        gui.drawString(mc.fontRendererObj, tps, 2, 22, 0xFFFFFF);
     }
 
     public static GuiScreen screenToOpen = null;
