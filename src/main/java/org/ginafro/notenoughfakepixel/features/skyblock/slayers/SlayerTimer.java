@@ -60,6 +60,10 @@ public class SlayerTimer {
                 isBossActive = false;
                 }
             }
+            if (message.contains("SLAYER QUEST FAILED!")) {
+                startTime = -1;
+                isBossActive = false;
+            }
         }
     }
 }

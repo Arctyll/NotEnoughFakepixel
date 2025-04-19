@@ -169,7 +169,7 @@ public class VoidgloomSeraph {
         if (NotEnoughFakepixel.feature.slayer.slayerShowBeaconPath && ScoreboardUtils.currentGamemode.isSkyblock() && ScoreboardUtils.currentLocation.isEnd()) {
             String message = StringUtils.stripControlCodes(event.message.getUnformattedText());
 
-            if (message.contains("SLAYER QUEST COMPLETE!")) {
+            if (message.contains("SLAYER QUEST COMPLETE!") || message.contains("SLAYER QUEST FAILED!")) {
                 fallingBlocks.clear();
                 waypoints.clear();
             }

@@ -28,6 +28,7 @@
     "MixinEntity",
     "MixinEntityLivingBase",
     "MixinItemRenderer",
-    "Accesors.EntityPlayerAccessor"
+    "Accesors.EntityPlayerAccessor",
+    "MixinRenderPlayer"
   ]
 }

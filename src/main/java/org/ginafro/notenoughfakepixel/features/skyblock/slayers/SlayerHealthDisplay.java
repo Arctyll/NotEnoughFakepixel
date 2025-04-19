@@ -2,66 +2,110 @@ package org.ginafro.notenoughfakepixel.features.skyblock.slayers;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.StringUtils;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
+import org.ginafro.notenoughfakepixel.config.gui.core.config.Position;
+import org.ginafro.notenoughfakepixel.events.Handlers.ScoreboardHandler;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class SlayerHealthDisplay {
-
     private final Minecraft mc = Minecraft.getMinecraft();
     private String displayText = "";
+    private boolean isBoss = false;
+    private final Position position; // Added position field
+
+    public SlayerHealthDisplay() {
+        this.position = NotEnoughFakepixel.feature.slayer.slayerBossHPPos; // Initialize position
+    }
+
+    public static final String[] SLAYER_BOSSES = {
+            "Revenant Horror",
+            "Atoned Horror",
+            "Sven Packmaster",
+            "Tarantula Broodfather",
+            "Voidgloom Seraph",
+            "Inferno Demonlord"
+    };
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
-        if (event.type != RenderGameOverlayEvent.ElementType.TEXT) return;
-
-        // Reset display text
-        displayText = "";
-
-        // Get the client player's username (strip formatting and ranks)
-        String clientUsername = StringUtils.stripControlCodes(mc.thePlayer.getDisplayName().getUnformattedText());
-
-        // Scan all entities in the world
-        for (Entity entity : mc.theWorld.loadedEntityList) {
-            String nametag = entity.getDisplayName().getUnformattedText();
-
-            // Check if the entity's nametag contains "Spawned by: (client player name)"
-            if (nametag.contains("Spawned by: " + clientUsername)) {
-                // Get the entity below this one
-                AxisAlignedBB boundingBox = entity.getEntityBoundingBox().expand(0, -1, 0); // Look directly below
-                for (Entity belowEntity : mc.theWorld.getEntitiesWithinAABBExcludingEntity(entity, boundingBox)) {
-                    String bossNametag = belowEntity.getDisplayName().getFormattedText();
-
-                    // Use the original nametag of the entity below as the boss name
-                    displayText = bossNametag;
-                    break; // Only use the first entity below
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (event.side != net.minecraftforge.fml.relauncher.Side.CLIENT || mc.theWorld == null) {
+            return;
+        }
+        if (NotEnoughFakepixel.feature.slayer.slayerBossHP) {
+            List<String> sidebarLines = ScoreboardHandler.getSidebarLines();
+            isBoss = false;
+            for (String line : sidebarLines) {
+                if (line.contains("Slay the boss!")) {
+                    isBoss = true;
+                    break;
                 }
             }
+
+            // Find closest Slayer boss
+            if (isBoss && mc.thePlayer != null) {
+                List<Entity> entities = mc.theWorld.getLoadedEntityList();
+                Entity closestBoss = null;
+                double closestDistance = Double.MAX_VALUE;
+                String bossNameFound = "";
+
+                for (Entity entity : entities) {
+                    if (entity instanceof EntityArmorStand && entity.hasCustomName()) {
+                        String entityName = entity.getCustomNameTag();
+                        for (String bossName : SLAYER_BOSSES) {
+                            if (entityName.contains(bossName)) {
+                                double distance = mc.thePlayer.getDistanceToEntity(entity);
+                                if (distance < closestDistance) {
+                                    closestDistance = distance;
+                                    closestBoss = entity;
+                                    bossNameFound = entityName;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+                displayText = (closestBoss != null) ? bossNameFound : "";
+            } else {
+                displayText = "";
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL || displayText.isEmpty() || !isBoss) {
+            return;
         }
 
-        // If we have a valid display text, render it
-        if (!displayText.isEmpty()) {
-            FontRenderer fr = mc.fontRendererObj;
-            int screenWidth = event.resolution.getScaledWidth();
-            int screenHeight = event.resolution.getScaledHeight();
+        ScaledResolution resolution = event.resolution;
+        FontRenderer fr = mc.fontRendererObj;
+        float scale = 2.0F;
 
-            // Save current GL state
-            GlStateManager.pushMatrix();
+        GL11.glPushMatrix();
 
-            // Scale and position
-            GlStateManager.scale(4.0F, 4.0F, 4.0F);
-            int textWidth = fr.getStringWidth(displayText);
-            int x = (screenWidth / 8) - (textWidth / 2);
-            int y = (screenHeight / 8) - 30;
+        GL11.glScalef(scale, scale, scale);
+        int textWidth = fr.getStringWidth(displayText);
+        int textHeight = fr.FONT_HEIGHT;
 
-            // Draw with shadow
-            fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
+        int x = position.getAbsX(resolution, textWidth) / (int)scale;
+        int y = position.getAbsY(resolution, textHeight) / (int)scale;
 
-            // Restore GL state
-            GlStateManager.popMatrix();
-        }
+        fr.drawStringWithShadow(displayText, x, y, 0xFF5555);
+
+        GL11.glPopMatrix();
+    }
+
+    @SubscribeEvent
+    public void onWorldUnload(net.minecraftforge.event.world.WorldEvent.Unload event) {
+        displayText = "";
+        isBoss = false;
     }
 }

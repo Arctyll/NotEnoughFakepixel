@@ -146,6 +146,7 @@ public class Diana {
                 lastCaptureTime = now;
             }
         }
+        if (NotEnoughFakepixel.feature.diana.dianaMinosInquisitorOutline) {
         clearCache();
         WorldClient world = Minecraft.getMinecraft().theWorld;
         for (Entity entity : world.loadedEntityList) {
@@ -158,6 +159,7 @@ public class Diana {
                     }
                 }
             }
+        }
         }
     }
 
@@ -307,24 +309,25 @@ public class Diana {
         try {
             for (Waypoint result : safeResults) {
                 if (result.isHidden()) continue;
-                Color newColor = white;
-                if (result.getType().equals("EMPTY")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaEmptyBurrowColor);
-                if (result.getType().equals("MOB")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaMobBurrowColor);
-                if (result.getType().equals("TREASURE")) newColor = ColorUtils.getColor(NotEnoughFakepixel.feature.diana.dianaTreasureBurrowColor);
-                if (result.getType().equals("MINOS")) newColor = new Color(243, 225, 107);
-                EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-
-                int[] coords = result.getCoordinates();
-                double[] adjustedCoords = new double[] {
-                        coords[0],
-                        coords[1] - 2,
-                        coords[2]
-                };
-
-                RenderUtils.drawTag(result.getType() + "("+Math.round(ParticleProcessor.getDistance(result.getCoordinates(), new int[] {player.getPosition().getX(), player.getPosition().getY(),player.getPosition().getZ()})*10)/10+"m)",
-                        adjustedCoords,
-                        new Color(255, 255, 255),
-                        partialTicks);
+                String displayName;
+                switch (result.getType()) {
+                    case "MINOS":
+                        displayName = "Inquisitor";
+                        break;
+                    case "EMPTY":
+                        displayName = "EMPTY";
+                        break;
+                    case "MOB":
+                        displayName = "MOB";
+                        break;
+                    case "TREASURE":
+                        displayName = "TREASURE";
+                        break;
+                    default:
+                        displayName = result.getType();
+                }
+                BlockPos pos = new BlockPos(result.getCoordinates()[0], result.getCoordinates()[1] + 1, result.getCoordinates()[2]);
+                GuessBurrow.renderWaypointText(displayName, pos, partialTicks);
             }
         } catch (Exception ignored) {}
     }
@@ -587,7 +590,6 @@ public class Diana {
                         Minecraft.getMinecraft().thePlayer.getPosition().getY(),
                         Minecraft.getMinecraft().thePlayer.getPosition().getZ()};
                 SoundUtils.playSound(coords, inquisitorSound, 3.0f, 0.8f);
-
 
                 if (getHubNumber() == hubNumber) {
                     Waypoint wp = new Waypoint("MINOS", new int[]{x, y, z});

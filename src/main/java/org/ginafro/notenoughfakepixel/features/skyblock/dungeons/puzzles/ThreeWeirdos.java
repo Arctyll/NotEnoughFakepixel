@@ -71,7 +71,7 @@ public class ThreeWeirdos {
                             mc.thePlayer.posY,
                             mc.thePlayer.posZ,
                             "note.pling",
-                            2.0F,
+                            4.0F,
                             1.0F,
                             false
                     );

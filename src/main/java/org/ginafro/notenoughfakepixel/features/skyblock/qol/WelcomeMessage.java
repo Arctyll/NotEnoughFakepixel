@@ -47,9 +47,11 @@ public class WelcomeMessage {
             "@Iru98X wishes you a happy nef-gaming!",
             "Fun Fact: It took @_Whispering nearly 7 months to go from Helper to Moderator on Fakepixel",
             "Did you know that Samsung everyday day keeps Apple away? (@ClassyCoder)",
-            "It always seems impossible until it’s done (@RealMG)",
+            "It always seems impossible until it’s done (@MG)",
             "Did you know that @Danielo is also #nef-addict?",
-            "Did you know that NEF won't launch if you haven't @Danielo's enough?"
+            "Did you know that NEF won't launch if you haven't @Danielo's enough?",
+            "It took @MG 3-days to figure out how to cancel chest gui rendering",
+            "Who is that behind you?"
     ));
 
     String epicString = "You discovered an epic message that gives you 200% extra penetration for the rest of your day!";

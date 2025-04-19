@@ -504,6 +504,7 @@ public class RenderUtils {
         GlStateManager.translate(-coordX, -coordY, -coordZ);
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
+        GlStateManager.disableLighting();
         GlStateManager.disableAlpha();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
         GL11.glLineWidth(lineWidth);
@@ -569,6 +570,7 @@ public class RenderUtils {
             GlStateManager.depthMask(true);
         }
         GlStateManager.disableBlend();
+        GlStateManager.enableLighting();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

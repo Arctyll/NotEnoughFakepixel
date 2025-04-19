@@ -40,13 +40,13 @@ public class LividDisplay {
 
     private static void initializeColors() {
         lividColors.put("Vendetta", EnumChatFormatting.WHITE);
-        lividColors.put("Crossed", EnumChatFormatting.DARK_PURPLE);
+        lividColors.put("Crossed", EnumChatFormatting.LIGHT_PURPLE);
         lividColors.put("Hockey", EnumChatFormatting.RED);
         lividColors.put("Doctor", EnumChatFormatting.GRAY);
         lividColors.put("Frog", EnumChatFormatting.DARK_GREEN);
         lividColors.put("Smile", EnumChatFormatting.GREEN);
         lividColors.put("Scream", EnumChatFormatting.BLUE);
-        lividColors.put("Purple", EnumChatFormatting.LIGHT_PURPLE);
+        lividColors.put("Purple", EnumChatFormatting.DARK_PURPLE);
         lividColors.put("Arcade", EnumChatFormatting.YELLOW);
     }
 
@@ -150,11 +150,11 @@ public class LividDisplay {
     private static int getWoolColorFromChatColor(EnumChatFormatting color) {
         switch (color) {
             case WHITE: return 0;
-            case DARK_PURPLE: return 2;
+            case LIGHT_PURPLE: return 6;
             case YELLOW: return 4;
             case GREEN: return 5;
-            case GRAY: return 7;
-            case LIGHT_PURPLE: return 10;
+            case GRAY: return 8;
+            case DARK_PURPLE: return 10;
             case BLUE: return 11;
             case DARK_GREEN: return 13;
             case RED: return 14;

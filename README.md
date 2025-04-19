@@ -23,6 +23,21 @@ This is a fork and remaster of official NotEnoughFakepixel mod from GinaFro.
 
 ### Quality of life
 - General
+  - Alerts **(NEW)**
+  - Disable block breaking particles **(NEW)**
+  - Always sprint **(NEW)**
+  - Copy chat message **(NEW)**
+  - Full block lever **(NEW)**
+  - Block placing items **(NEW)**
+  - Show unclaimed Jacob rewards **(NEW)**
+  - Fairy soul waypoints **(NEW)**
+  - Etherwarp overlay **(NEW)**
+  - Etherwarp sounds **(NEW)**
+  - Hide flaming fists **(NEW)**
+  - Hide player armor **(NEW)**
+  - Hide dead mobs **(NEW)**
+  - Item animations **(NEW)**
+  - Player size **(NEW)**
   - Disable Hyperion Explosions
   - Disable Thunderlord enchantment bolts
   - No Hurt camera animation
@@ -51,6 +66,15 @@ This is a fork and remaster of official NotEnoughFakepixel mod from GinaFro.
 
 ### Dungeons
 - General
+  - Custom Leap GUI **(NEW)**
+  - Custom Terminal GUI **(NEW)**
+  - Blood ready title **(NEW)**
+  - Boulder Solver **(NEW)**
+  - Silverfish Solver **(NEW)**
+  - Teleport maze Solver **(NEW)**
+  - Terminal waypoints **(NEW)**
+  - Custom S+ message **(NEW)**
+  - Spirit bow tracer **(NEW)**
   - Dungeon Map
   - Three Weirdos Solver
   - Auto Ready FIX **(NEW)**
@@ -91,14 +115,21 @@ This is a fork and remaster of official NotEnoughFakepixel mod from GinaFro.
 - Ashfang helper & overlay **(NEW)**
 
 ### Diana
+- Burrow guess **(NEW)**
 - Burrow waypoints **(NEW)**
 - Gaia construct helper **(NEW)**
 - Syamese Lynx helper **(NEW)**
 - Minos Inquisitor party chat & waypoint **(NEW)**
+- Inquisitor Outline **(NEW)**
 - Some QOL features **(NEW)**
 
 ### Slayers
 - Voidgloom Seraph beacon waypoint BETA **(NEW)**
+- Miniboss spawn alert **(NEW)**
+- Slayer health display **(NEW)**
+- Slayer boss time **(NEW)**
+- Blaze pillar title **(NEW)**
+- Blaze attunements **(NEW)**
 
 
 </div>

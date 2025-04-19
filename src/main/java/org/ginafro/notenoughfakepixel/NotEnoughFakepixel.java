@@ -2,11 +2,15 @@ package org.ginafro.notenoughfakepixel;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -14,8 +18,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import org.ginafro.notenoughfakepixel.Alerts.Alerts;
 import org.ginafro.notenoughfakepixel.commands.CopyCommand;
-import org.ginafro.notenoughfakepixel.config.features.QualityOfLife;
 import org.ginafro.notenoughfakepixel.config.gui.commands.Commands;
 import org.ginafro.notenoughfakepixel.config.gui.config.ConfigEditor;
 import org.ginafro.notenoughfakepixel.config.gui.core.GuiScreenElementWrapper;
@@ -26,6 +30,8 @@ import org.ginafro.notenoughfakepixel.features.skyblock.crimson.AshfangHelper;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.BossNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.crimson.AshfangOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.*;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets.AutoRoom;
+import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.Secrets.Waypoints;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.devices.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.BatMobDisplay;
 import org.ginafro.notenoughfakepixel.features.skyblock.dungeons.mobs.FelMobDisplay;
@@ -43,6 +49,7 @@ import org.ginafro.notenoughfakepixel.features.skyblock.enchanting.PreventMisscl
 import org.ginafro.notenoughfakepixel.features.skyblock.fishing.GreatCatchNotifier;
 import org.ginafro.notenoughfakepixel.features.skyblock.mining.*;
 //import org.ginafro.notenoughfakepixel.features.skyblock.overlays.StorageOverlay;
+import org.ginafro.notenoughfakepixel.features.skyblock.overlays.StorageOverlay;
 import org.ginafro.notenoughfakepixel.features.skyblock.qol.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.diana.*;
 import org.ginafro.notenoughfakepixel.features.skyblock.slayers.*;
@@ -69,6 +76,9 @@ public class NotEnoughFakepixel {
 
     public static File configDirectory;
     private File configFile;
+
+    public static JsonObject roomsJson;
+    public static JsonObject waypointsJson;
 
     public static Configuration feature;
 
@@ -104,8 +114,29 @@ public class NotEnoughFakepixel {
         }
 
         ClientCommandHandler.instance.registerCommand(new CopyCommand());
+
+        new Aliases();
+
+        try {
+            ResourceLocation roomsLoc = new ResourceLocation("notenoughfakepixel", "dungeonrooms/dungeonrooms.json");
+            InputStream roomsIn = Minecraft.getMinecraft().getResourceManager().getResource(roomsLoc).getInputStream();
+            BufferedReader roomsReader = new BufferedReader(new InputStreamReader(roomsIn));
+
+            ResourceLocation waypointsLoc = new ResourceLocation("notenoughfakepixel", "dungeonrooms/secretlocations.json");
+            InputStream waypointsIn = Minecraft.getMinecraft().getResourceManager().getResource(waypointsLoc).getInputStream();
+            BufferedReader waypointsReader = new BufferedReader(new InputStreamReader(waypointsIn));
+
+            Gson gson = new Gson();
+            roomsJson = gson.fromJson(roomsReader, JsonObject.class);
+
+            waypointsJson = gson.fromJson(waypointsReader, JsonObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         ClientRegistry.registerKeyBinding(openGuiKey);
         Commands.init();
+        Alerts.load();
         registerModEvents();
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::saveConfig));
@@ -132,11 +163,15 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new AutoReadyDungeon());
         MinecraftForge.EVENT_BUS.register(new AutoCloseChests());
 
+        MinecraftForge.EVENT_BUS.register(new AutoRoom());
+        MinecraftForge.EVENT_BUS.register(new Waypoints());
+
         MinecraftForge.EVENT_BUS.register(new ThreeWeirdos());
         MinecraftForge.EVENT_BUS.register(new WaterSolver());
         MinecraftForge.EVENT_BUS.register(new BoulderSolver());
         MinecraftForge.EVENT_BUS.register(new SilverFishSolver());
         MinecraftForge.EVENT_BUS.register(new TeleportMazeSolver());
+        MinecraftForge.EVENT_BUS.register(new CreeperSolver());
 
         MinecraftForge.EVENT_BUS.register(new WitherBloodKeysTracers());
         MinecraftForge.EVENT_BUS.register(new StarredMobDisplay());
@@ -190,12 +225,16 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new HideFlamingFists());
         MinecraftForge.EVENT_BUS.register(new MiscFeatures());
         MinecraftForge.EVENT_BUS.register(new ItemAnimations());
+        MinecraftForge.EVENT_BUS.register(new Alerts());
+        //MinecraftForge.EVENT_BUS.register(new SlotLocking());
+        //MinecraftForge.EVENT_BUS.register(new StorageOverlay.StorageEvent());
 
         MinecraftForge.EVENT_BUS.register(new Fullbright());
         MinecraftForge.EVENT_BUS.register(new KDCounter());
         MinecraftForge.EVENT_BUS.register(new Map());
         // Diana
         MinecraftForge.EVENT_BUS.register(new Diana());
+        MinecraftForge.EVENT_BUS.register(new GuessBurrow());
         // Crimson
         MinecraftForge.EVENT_BUS.register(new AshfangOverlay());
         MinecraftForge.EVENT_BUS.register(new BossNotifier());
@@ -207,6 +246,7 @@ public class NotEnoughFakepixel {
         MinecraftForge.EVENT_BUS.register(new MinibossAlert());
         MinecraftForge.EVENT_BUS.register(new BlazeAttunements());
         MinecraftForge.EVENT_BUS.register(new SlayerTimer());
+        MinecraftForge.EVENT_BUS.register(new SlayerHealthDisplay());
 
         // Parsers
         MinecraftForge.EVENT_BUS.register(new TablistParser());
@@ -248,6 +288,45 @@ public class NotEnoughFakepixel {
             }
         } catch (IOException ignored) {
         }
+    }
+
+    @SubscribeEvent
+    public void renderPlayerInfo(final RenderGameOverlayEvent.Post event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (ScoreboardUtils.currentLocation.isDungeon()) {
+            if (AutoRoom.guiToggled) {
+                AutoRoom.renderText();
+            }
+            if (AutoRoom.coordToggled) {
+                AutoRoom.renderCoord();
+            }
+        }
+    }
+
+    private final Minecraft mc = Minecraft.getMinecraft();
+
+    @SubscribeEvent
+    public void onRenderGameOverlay(RenderGameOverlayEvent event) {
+        if (event.type != RenderGameOverlayEvent.ElementType.TEXT || mc.theWorld == null || mc.thePlayer == null) {
+            return;
+        }
+
+        GuiIngame gui = mc.ingameGUI;
+
+        // FPS
+        String fps = "FPS: " + Minecraft.getDebugFPS();
+
+        // Ping
+        String ping = "Ping: " + (mc.thePlayer.sendQueue.getPlayerInfo(mc.thePlayer.getUniqueID()) != null
+                ? mc.thePlayer.sendQueue.getPlayerInfo(mc.thePlayer.getUniqueID()).getResponseTime() : "N/A") + " ms";
+
+        // TPS
+        String tps = "TPS: " + (mc.isSingleplayer() ? "20.0" : "N/A");
+
+        // Render on screen
+        gui.drawString(mc.fontRendererObj, fps, 2, 2, 0xFFFFFF);
+        gui.drawString(mc.fontRendererObj, ping, 2, 12, 0xFFFFFF);
+        gui.drawString(mc.fontRendererObj, tps, 2, 22, 0xFFFFFF);
     }
 
     public static GuiScreen screenToOpen = null;

@@ -60,12 +60,10 @@ public class SilverFishSolver {
             if (silverfishChestPos == null || roomFacing == null) {
                 if (ticks % 20 == 0) {
                     new Thread(() -> {
-                        // New room detection logic
-                        boolean foundRoom = false;
                         prevInSilverfishRoom = inSilverfishRoom;
                         double x = mc.thePlayer.posX;
                         double z = mc.thePlayer.posZ;
-                        AxisAlignedBB entityScan = new AxisAlignedBB(x - 25, 67, z - 25, x + 25, 68, z + 25); // 50x1x50
+                        AxisAlignedBB entityScan = new AxisAlignedBB(x - 25, 67, z - 25, x + 25, 68, z + 25);
                         List<EntitySilverfish> silverfishList = mc.theWorld.getEntitiesWithinAABB(EntitySilverfish.class, entityScan);
                         List<EntityItem> items = mc.theWorld.getEntitiesWithinAABB(EntityItem.class, entityScan);
                         if (silverfishList.size() > 0 && items.size() > 0) {
@@ -76,8 +74,8 @@ public class SilverFishSolver {
                                         Math.abs(item.posX - silverfishX) < 1 &&
                                         Math.abs(item.posZ - silverfishZ) < 1) {
                                     Iterable<BlockPos> blocks = BlockPos.getAllInBox(
-                                            new BlockPos(mc.thePlayer.posX - 27, 67, mc.thePlayer.posZ - 27),
-                                            new BlockPos(mc.thePlayer.posX + 27, 67, mc.thePlayer.posZ + 27)
+                                            new BlockPos(mc.thePlayer.posX - 27, 66, mc.thePlayer.posZ - 27),
+                                            new BlockPos(mc.thePlayer.posX + 27, 66, mc.thePlayer.posZ + 27)
                                     );
                                     for (BlockPos blockPos : blocks) {
                                         if (mc.theWorld.getBlockState(blockPos).getBlock() == Blocks.packed_ice &&
@@ -95,7 +93,7 @@ public class SilverFishSolver {
                                 }
                             }
                         }
-                    }, "Skytils-Ice-Path-Detection").start();
+                    }, "Ice-Path-Detection").start();
                     ticks = 0;
                 }
             } else if (grid == null) {

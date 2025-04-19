@@ -2,17 +2,28 @@ package org.ginafro.notenoughfakepixel.features.skyblock.dungeons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StringUtils;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.ginafro.notenoughfakepixel.Configuration;
 import org.ginafro.notenoughfakepixel.NotEnoughFakepixel;
 import org.ginafro.notenoughfakepixel.config.features.Dungeons;
+import org.ginafro.notenoughfakepixel.utils.RenderUtils;
 import org.ginafro.notenoughfakepixel.utils.ScoreboardUtils;
+
+import java.awt.*;
 
 public class MiscDungFeatures {
 
@@ -27,7 +38,7 @@ public class MiscDungFeatures {
 
         if (!ScoreboardUtils.currentLocation.isDungeon()) return;
 
-        if (message.contains("[BOSS] The Watcher: That will be enough for now.")) {
+        if (message.startsWith("[BOSS] The Watcher: That will be enough for now.")) {
             if (NotEnoughFakepixel.feature.dungeons.dungeonsBloodReady) {
                 showCustomOverlay(EnumChatFormatting.RED + "BLOOD READY!", 2000);
                 if (mc.theWorld != null) {
@@ -42,6 +53,19 @@ public class MiscDungFeatures {
                     );
                     Minecraft.getMinecraft().thePlayer.sendChatMessage("/pc Blood Ready!");
                 }
+            }
+        }
+        if (message.startsWith("A Spirit Bear has appeared!")) {
+            if (mc.theWorld != null && NotEnoughFakepixel.feature.dungeons.dungeonsSpiritBow) {
+                mc.theWorld.playSound(
+                        mc.thePlayer.posX,
+                        mc.thePlayer.posY,
+                        mc.thePlayer.posZ,
+                        "mob.enderdragon.growl",
+                        2.0F,
+                        1.0F,
+                        false
+                );
             }
         }
     }
@@ -74,6 +98,29 @@ public class MiscDungFeatures {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (mc.theWorld == null) {
             displayText = "";
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderWorldLast(RenderWorldLastEvent event) {
+        WorldClient world = Minecraft.getMinecraft().theWorld;
+
+        if (!NotEnoughFakepixel.feature.dungeons.dungeonsSpiritBow) return;
+        if (!ScoreboardUtils.currentLocation.isDungeon()) return;
+
+        for (Entity entity : world.loadedEntityList) {
+            if (entity instanceof EntityArmorStand) {
+                EntityArmorStand armorStand = (EntityArmorStand) entity;
+                if (armorStand.getName().contains("Spirit Bow")) {
+                    RenderUtils.draw3DLine(new Vec3(entity.posX,entity.posY+0.5,entity.posZ),
+                            Minecraft.getMinecraft().thePlayer.getPositionEyes(event.partialTicks),
+                            Color.RED,
+                            8,
+                            true,
+                            event.partialTicks
+                    );
+                }
+            }
         }
     }
 }
